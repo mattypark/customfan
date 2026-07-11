@@ -1,0 +1,96 @@
+.proc {
+  display: grid;
+  gap: var(--gap-hair);
+  padding: var(--gap);
+}
+
+.proc__row {
+  display: grid;
+  grid-template-columns: 1fr 92px 104px;
+  align-items: center;
+  gap: var(--gap);
+  padding: 7px 10px;
+  border-radius: var(--radius-chip);
+  transition: background var(--duration-fast) ease;
+}
+
+.proc__row--head {
+  padding-bottom: var(--gap-tight);
+  border-bottom: 1px solid var(--etch);
+  border-radius: 0;
+  margin-bottom: var(--gap-tight);
+}
+
+.proc__row:not(.proc__row--head):hover {
+  background: oklch(100% 0 0 / 0.035);
+}
+
+/* A leak suspect gets a lit left edge — visible without reading a word */
+.proc__row--suspect {
+  background: var(--hot-glow);
+  box-shadow: inset 3px 0 0 var(--hot);
+}
+
+.proc__name {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  min-width: 0;
+}
+
+.proc__cmd {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.proc__pid {
+  font-size: var(--text-label);
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.proc__flag {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hot);
+  box-shadow: 0 0 8px var(--hot);
+  flex-shrink: 0;
+  animation: proc-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes proc-pulse {
+  50% { opacity: 0.35; }
+}
+
+/* Value cell doubles as its own bar chart: bar behind, number on top */
+.proc__num {
+  position: relative;
+  text-align: right;
+  color: var(--ink-dim);
+  font-size: var(--text-body);
+  padding: 2px 6px;
+  isolation: isolate;
+}
+
+.proc__bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: -1;
+  border-radius: 2px;
+  opacity: 0.28;
+  transition: width var(--duration) var(--ease-out-expo);
+}
+
+.proc__bar--cpu { background: var(--warm); }
+.proc__bar--mem { background: var(--data); }
+
+.proc__empty {
+  padding: var(--gap-wide);
+  text-align: center;
+  color: var(--ink-faint);
+  font-family: var(--font-data);
+  font-size: var(--text-label);
+}

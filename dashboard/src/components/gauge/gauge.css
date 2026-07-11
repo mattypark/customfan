@@ -1,0 +1,98 @@
+.gauge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* Each state repaints the whole instrument — one variable, cascading. */
+  --state: var(--cool);
+  --state-glow: var(--cool-glow);
+}
+
+.gauge--warm { --state: var(--warm); --state-glow: var(--warm-glow); }
+.gauge--hot { --state: var(--hot); --state-glow: var(--hot-glow); }
+
+.gauge__dial {
+  width: min(300px, 68vw);
+  height: auto;
+  overflow: visible;
+}
+
+.gauge__track {
+  fill: none;
+  stroke: var(--chassis-void);
+  stroke-width: 13;
+  stroke-linecap: round;
+}
+
+.gauge__arc {
+  fill: none;
+  stroke: var(--state);
+  stroke-width: 13;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--state-glow));
+  transition: stroke var(--duration) var(--ease-out-expo);
+}
+
+.gauge__tick {
+  stroke: var(--etch);
+  stroke-width: 1.5;
+}
+
+.gauge__tick--major {
+  stroke: var(--etch-bright);
+  stroke-width: 2;
+}
+
+.gauge__tick-label {
+  fill: var(--ink-faint);
+  font-family: var(--font-data);
+  font-size: 10px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.gauge__needle {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px oklch(0% 0 0 / 0.8));
+}
+
+.gauge__hub {
+  fill: var(--chassis-raised);
+  stroke: var(--state);
+  stroke-width: 2;
+}
+
+/* Readout sits inside the open bottom of the dial */
+.gauge__readout {
+  position: absolute;
+  bottom: 6%;
+  display: grid;
+  justify-items: center;
+  gap: var(--gap-tight);
+}
+
+.gauge__value {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-size: var(--text-gauge);
+  font-weight: 300;
+  line-height: 0.9;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  text-shadow: 0 0 24px var(--state-glow);
+}
+
+.gauge__unit {
+  font-size: 0.3em;
+  color: var(--ink-faint);
+  letter-spacing: 0;
+}
+
+.gauge__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap-tight);
+}

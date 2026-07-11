@@ -10,9 +10,17 @@ import {
 } from './sampler/processSampler.js';
 import { startWatchdog, watchdogState } from './watchdog/index.js';
 import { recentActions } from './watchdog/actionLog.js';
+import { buildFrame, startBroadcasting } from './broadcast.js';
+import { getVentState, ingestVentPost } from './sensors/vent.js';
 
 const app = express();
 app.use(express.json());
+
+// Dashboard runs on its own Vite port in dev.
+app.use((_req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 const startedAt = Date.now();
 
@@ -23,19 +31,30 @@ app.get('/health', (_req, res) => {
     version: APP_VERSION,
     sim: SIM_MODE,
     uptimeSeconds: Math.round((Date.now() - startedAt) / 1000),
-    stage: 3,
+    stage: 5,
   });
 });
 
 app.get('/api/stats', (_req, res) => {
   res.json({
     thermals: getLatestThermals(),
+    vent: getVentState(),
     processes: {
       topByCpu: topByCpu(15),
       topByMemory: topByMemory(15),
     },
     generatedAt: Date.now(),
   });
+});
+
+/** The Raspberry Pi vent agent POSTs its probe readings here. */
+app.post('/api/vent-temps', (req, res) => {
+  const result = ingestVentPost(req.body);
+  if (result === null) {
+    res.status(400).json({ ok: false, error: 'no valid readings in payload' });
+    return;
+  }
+  res.json({ ok: true, accepted: result.accepted });
 });
 
 app.get('/api/watchdog', (_req, res) => {
@@ -52,11 +71,14 @@ export const wss = new WebSocketServer({ server, path: '/ws' });
 
 wss.on('connection', (socket) => {
   socket.send(JSON.stringify({ type: 'hello', app: APP_NAME, sim: SIM_MODE }));
+  // Send one frame immediately so the dashboard isn't blank until the next tick.
+  socket.send(JSON.stringify(buildFrame()));
 });
 
 startThermalPolling();
 startProcessSampling();
 startWatchdog();
+startBroadcasting(wss);
 
 server.listen(DAEMON_PORT, () => {
   console.log(

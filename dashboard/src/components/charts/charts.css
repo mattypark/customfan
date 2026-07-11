@@ -1,0 +1,68 @@
+.spark {
+  --tone: var(--data);
+  padding: var(--gap);
+  display: grid;
+  gap: var(--gap-tight);
+}
+
+.spark--cool { --tone: var(--cool); }
+.spark--warm { --tone: var(--warm); }
+.spark--hot { --tone: var(--hot); }
+.spark--data { --tone: var(--data); }
+
+.spark__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+.spark__value {
+  font-size: var(--text-stat);
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.spark__unit {
+  font-size: 0.5em;
+  color: var(--ink-faint);
+  margin-left: 3px;
+}
+
+.spark__svg {
+  width: 100%;
+  height: 56px;
+  /* Recessed well — the trace sits *inside* the panel */
+  background: var(--chassis-void);
+  border-radius: var(--radius-chip);
+  box-shadow: var(--depth-inset);
+  padding: 0;
+  overflow: visible;
+}
+
+.spark__line {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 3px color-mix(in oklch, var(--tone) 40%, transparent));
+}
+
+.spark__area {
+  fill: color-mix(in oklch, var(--tone) 12%, transparent);
+  stroke: none;
+}
+
+.spark__head-dot {
+  fill: var(--tone);
+  vector-effect: non-scaling-stroke;
+}
+
+.spark__scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-label);
+  color: var(--ink-faint);
+}

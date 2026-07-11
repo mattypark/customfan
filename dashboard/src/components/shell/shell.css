@@ -1,0 +1,57 @@
+.rail {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  padding-bottom: var(--gap);
+  border-bottom: 1px solid var(--etch);
+}
+
+.rail__title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.rail__tag {
+  font-family: var(--font-data);
+  font-size: var(--text-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 3px;
+}
+
+.rail__status {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  flex-wrap: wrap;
+}
+
+.rail__led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+
+.rail__led--live {
+  animation: led-breathe 2.4s ease-in-out infinite;
+}
+
+.rail__led--connecting,
+.rail__led--lost {
+  animation: led-blink 0.9s steps(2, end) infinite;
+}
+
+@keyframes led-breathe {
+  50% { opacity: 0.4; }
+}
+
+@keyframes led-blink {
+  50% { opacity: 0.15; }
+}

@@ -1,0 +1,98 @@
+@import './tokens.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--chassis-void);
+  color: var(--ink);
+  font-family: var(--font-label);
+  font-size: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+
+  /* Machined-metal atmosphere: a faint vignette + fine grain, no gradients-as-decoration */
+  background-image:
+    radial-gradient(
+      120% 80% at 50% -10%,
+      oklch(26% 0.02 250 / 0.55),
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      oklch(100% 0 0 / 0.012) 0 1px,
+      transparent 1px 3px
+    );
+  background-attachment: fixed;
+}
+
+/* Engraved panel — the one surface primitive everything is built from */
+.panel {
+  background: linear-gradient(
+    180deg,
+    var(--chassis-raised),
+    var(--chassis-deep)
+  );
+  border: 1px solid var(--etch);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--depth-panel);
+}
+
+.panel-label {
+  font-family: var(--font-data);
+  font-size: var(--text-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.mono {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Status chip — the shared vocabulary for every state in the UI */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  padding: 2px 7px;
+  border-radius: var(--radius-chip);
+  font-family: var(--font-data);
+  font-size: var(--text-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  background: color-mix(in oklch, currentColor 12%, transparent);
+}
+
+.chip--cool { color: var(--cool); }
+.chip--warm { color: var(--warm); }
+.chip--hot { color: var(--hot); }
+.chip--data { color: var(--data); }
+.chip--mute { color: var(--ink-faint); }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--chassis-void); }
+::-webkit-scrollbar-thumb {
+  background: var(--etch);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--etch-bright); }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

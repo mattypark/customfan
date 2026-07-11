@@ -1,0 +1,64 @@
+/*
+ * customfan design tokens — "instrument panel"
+ *
+ * Direction: a rack-mounted thermal readout. Near-black machined chassis,
+ * phosphor-green data, amber and red only when the machine is actually in
+ * trouble. Nothing decorative is colored. Color = state, always.
+ */
+
+:root {
+  /* Chassis — layered dark, not flat #000 */
+  --chassis-void: oklch(14% 0.008 250);
+  --chassis-deep: oklch(18% 0.01 250);
+  --chassis: oklch(22% 0.012 250);
+  --chassis-raised: oklch(27% 0.014 250);
+  --etch: oklch(34% 0.016 250); /* hairline rules, engraved edges */
+  --etch-bright: oklch(45% 0.02 250);
+
+  /* Readout text */
+  --ink: oklch(93% 0.01 250);
+  --ink-dim: oklch(68% 0.012 250);
+  --ink-faint: oklch(52% 0.012 250);
+
+  /* State — the only colors in the system */
+  --cool: oklch(78% 0.16 165); /* nominal: phosphor green */
+  --warm: oklch(82% 0.15 85); /* elevated: amber */
+  --hot: oklch(66% 0.21 27); /* critical: red */
+  --data: oklch(75% 0.13 220); /* neutral telemetry: cold blue */
+
+  --cool-glow: oklch(78% 0.16 165 / 0.16);
+  --warm-glow: oklch(82% 0.15 85 / 0.18);
+  --hot-glow: oklch(66% 0.21 27 / 0.22);
+
+  /* Type: two families, both purposeful */
+  --font-data: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  --font-label: 'SF Pro Text', -apple-system, system-ui, sans-serif;
+
+  --text-gauge: clamp(3.5rem, 2rem + 6vw, 6.5rem);
+  --text-stat: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+  --text-body: 0.875rem;
+  --text-label: 0.6875rem;
+
+  /* Rhythm — deliberately uneven: dense data, generous chrome */
+  --gap-hair: 2px;
+  --gap-tight: 6px;
+  --gap: 14px;
+  --gap-wide: 28px;
+  --gap-section: clamp(28px, 2vw + 20px, 48px);
+
+  --radius-panel: 10px;
+  --radius-chip: 3px;
+
+  --duration-fast: 140ms;
+  --duration: 320ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Engraved-panel depth: inner top highlight + outer drop */
+  --depth-panel:
+    inset 0 1px 0 oklch(100% 0 0 / 0.05),
+    inset 0 0 0 1px oklch(100% 0 0 / 0.03),
+    0 12px 32px -12px oklch(0% 0 0 / 0.7);
+  --depth-inset:
+    inset 0 2px 6px oklch(0% 0 0 / 0.5),
+    inset 0 -1px 0 oklch(100% 0 0 / 0.04);
+}

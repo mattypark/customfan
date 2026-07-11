@@ -1,0 +1,96 @@
+.app {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--gap-section) clamp(16px, 3vw, 40px) var(--gap-section);
+  display: grid;
+  gap: var(--gap-wide);
+}
+
+/*
+ * Bento, not a uniform card grid: the gauge holds a tall column, the traces
+ * stack beside it, and the two data panels span the width beneath.
+ */
+.app__grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: minmax(300px, 0.85fr) minmax(0, 0.75fr) minmax(0, 1fr);
+  grid-template-areas:
+    'gauge traces vent'
+    'proc  proc   log';
+}
+
+.app__gauge {
+  grid-area: gauge;
+  display: grid;
+  place-items: center;
+  padding: var(--gap-wide) var(--gap);
+  min-height: 340px;
+}
+
+.app__traces {
+  grid-area: traces;
+  display: grid;
+  gap: var(--gap);
+  /* min-height:0 lets the two trace panels actually share the column height */
+  min-height: 0;
+}
+
+.app__traces > .panel {
+  display: grid;
+  align-content: center;
+  min-height: 0;
+}
+
+.app__vent {
+  grid-area: vent;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+}
+
+.app__proc {
+  grid-area: proc;
+  min-width: 0;
+}
+
+.app__log {
+  grid-area: log;
+  min-width: 0;
+}
+
+.app__panel-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: var(--gap) var(--gap) 0;
+  color: var(--ink-dim);
+}
+
+.app__panel-note {
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+@media (max-width: 1180px) {
+  .app__grid {
+    grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+    grid-template-areas:
+      'gauge traces'
+      'vent  vent'
+      'proc  log';
+  }
+}
+
+@media (max-width: 940px) {
+  .app__grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'gauge'
+      'traces'
+      'vent'
+      'proc'
+      'log';
+  }
+}

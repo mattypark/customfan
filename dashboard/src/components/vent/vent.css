@@ -1,0 +1,141 @@
+.vent {
+  display: grid;
+  gap: var(--gap);
+  padding: var(--gap);
+}
+
+.vent__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+.vent__seen {
+  font-size: var(--text-label);
+  color: var(--ink-faint);
+}
+
+.vent__led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+
+.vent__led--live {
+  animation: vent-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes vent-breathe {
+  50% { opacity: 0.4; }
+}
+
+.vent__probes {
+  display: flex;
+  gap: var(--gap);
+  justify-content: space-around;
+  align-items: end;
+}
+
+.vent__probe {
+  --tone: var(--cool);
+  display: grid;
+  justify-items: center;
+  gap: var(--gap-tight);
+  min-width: 0;
+  flex: 1;
+}
+
+.vent__probe--warm { --tone: var(--warm); }
+.vent__probe--hot { --tone: var(--hot); }
+
+.vent__probe-id {
+  font-size: var(--text-label);
+  color: var(--ink-faint);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Recessed glass column with a rising mercury fill */
+.vent__column {
+  position: relative;
+  width: 14px;
+  height: 96px;
+  border-radius: 7px;
+  background: var(--chassis-void);
+  box-shadow: var(--depth-inset);
+  overflow: hidden;
+  display: block;
+}
+
+.vent__mercury {
+  position: absolute;
+  inset: auto 0 0 0;
+  background: linear-gradient(
+    180deg,
+    var(--tone),
+    color-mix(in oklch, var(--tone) 55%, transparent)
+  );
+  border-radius: 7px;
+  box-shadow: 0 0 12px color-mix(in oklch, var(--tone) 50%, transparent);
+}
+
+.vent__probe-temp {
+  font-size: 1.05rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.vent__probe-unit {
+  font-size: 0.6em;
+  color: var(--ink-faint);
+  margin-left: 1px;
+}
+
+.vent__probe-src {
+  font-family: var(--font-data);
+  font-size: var(--text-label);
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.vent__delta {
+  font-size: var(--text-label);
+  color: var(--ink-dim);
+  text-align: center;
+  padding-top: var(--gap-tight);
+  border-top: 1px solid var(--etch);
+}
+
+.vent__delta strong {
+  color: var(--data);
+  font-weight: 500;
+}
+
+.vent__offline {
+  display: grid;
+  justify-items: center;
+  gap: var(--gap-tight);
+  padding: var(--gap-wide) var(--gap);
+  text-align: center;
+}
+
+.vent__offline-copy {
+  font-size: var(--text-label);
+  color: var(--ink-faint);
+  line-height: 1.6;
+  max-width: 34ch;
+}
+
+.vent__cmd {
+  font-size: var(--text-label);
+  color: var(--cool);
+  background: var(--chassis-void);
+  padding: 6px 10px;
+  border-radius: var(--radius-chip);
+  box-shadow: var(--depth-inset);
+}
