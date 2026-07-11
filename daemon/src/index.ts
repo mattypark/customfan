@@ -8,6 +8,8 @@ import {
   topByCpu,
   topByMemory,
 } from './sampler/processSampler.js';
+import { startWatchdog, watchdogState } from './watchdog/index.js';
+import { recentActions } from './watchdog/actionLog.js';
 
 const app = express();
 app.use(express.json());
@@ -21,7 +23,7 @@ app.get('/health', (_req, res) => {
     version: APP_VERSION,
     sim: SIM_MODE,
     uptimeSeconds: Math.round((Date.now() - startedAt) / 1000),
-    stage: 2,
+    stage: 3,
   });
 });
 
@@ -36,6 +38,13 @@ app.get('/api/stats', (_req, res) => {
   });
 });
 
+app.get('/api/watchdog', (_req, res) => {
+  res.json({
+    ...watchdogState(),
+    actions: recentActions(50),
+  });
+});
+
 const server = createServer(app);
 
 // WebSocket endpoint — dashboard connects here in Stage 4 for live stats.
@@ -47,6 +56,7 @@ wss.on('connection', (socket) => {
 
 startThermalPolling();
 startProcessSampling();
+startWatchdog();
 
 server.listen(DAEMON_PORT, () => {
   console.log(

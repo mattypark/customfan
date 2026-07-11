@@ -5,7 +5,8 @@ import { RingBuffer } from './ringBuffer.js';
 
 const execFileP = promisify(execFile);
 
-const SAMPLE_INTERVAL_MS = 5000;
+/** Override with SAMPLE_MS env for fast local watchdog testing. */
+const SAMPLE_INTERVAL_MS = Number(process.env.SAMPLE_MS ?? 5000);
 /** ~5 min of history per PID at 5s intervals — enough for leak-slope math. */
 const SAMPLES_PER_PID = 60;
 const PS_TIMEOUT_MS = 4000;
@@ -17,7 +18,7 @@ const history = new Map<number, RingBuffer<ProcessSample>>();
 async function snapshot(): Promise<ProcessSample[]> {
   const { stdout } = await execFileP(
     'ps',
-    ['-axo', 'pid=,rss=,%cpu=,etime=,comm='],
+    ['-axo', 'pid=,rss=,%cpu=,etime=,stat=,comm='],
     { timeout: PS_TIMEOUT_MS, maxBuffer: PS_MAX_BUFFER },
   );
 
@@ -25,14 +26,17 @@ async function snapshot(): Promise<ProcessSample[]> {
   const samples: ProcessSample[] = [];
 
   for (const line of stdout.split('\n')) {
-    const m = line.match(/^\s*(\d+)\s+(\d+)\s+([\d.]+)\s+(\S+)\s+(.+)$/);
+    const m = line.match(
+      /^\s*(\d+)\s+(\d+)\s+([\d.]+)\s+(\S+)\s+(\S+)\s+(.+)$/,
+    );
     if (!m) continue;
     samples.push({
       pid: Number(m[1]),
       rssKb: Number(m[2]),
       cpuPercent: Number(m[3]),
       etime: m[4] as string,
-      command: (m[5] as string).trim(),
+      stat: m[5] as string,
+      command: (m[6] as string).trim(),
       sampledAt: now,
     });
   }

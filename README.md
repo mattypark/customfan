@@ -32,7 +32,7 @@ sensor data. The Pi + thermistors swap in later without code changes.
 
 - [x] **Stage 1** — Scaffold, tech stack, hardware order list
 - [x] **Stage 2** — Mac sensor layer (CPU temp, fan RPM, per-process sampling)
-- [ ] **Stage 3** — Watchdog engine (leak detection, frozen-task detection, kill policy)
+- [x] **Stage 3** — Watchdog engine (leak detection, frozen-task detection, kill policy)
 - [ ] **Stage 4** — Dashboard UI (live WebSocket charts + gauges)
 - [ ] **Stage 5** — Raspberry Pi vent-temp agent, DS18B20 path (sim until hardware)
 - [ ] **Stage 6** — True analog thermistors via MCP3008 ADC + Steinhart–Hart

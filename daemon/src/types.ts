@@ -20,6 +20,8 @@ export interface ProcessSample {
   rssKb: number;
   cpuPercent: number;
   etime: string;
+  /** BSD process state from `ps` (R runnable, S sleeping, T stopped, U uninterruptible, Z zombie…). */
+  stat: string;
   command: string;
   sampledAt: number;
 }

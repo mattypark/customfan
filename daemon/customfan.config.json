@@ -1,0 +1,19 @@
+{
+  "killEnabled": false,
+  "dryRun": true,
+  "scanIntervalSec": 30,
+  "sigkillGraceSec": 10,
+  "alertCooldownSec": 300,
+  "leak": {
+    "minSamples": 24,
+    "minSlopeKbPerMin": 1024,
+    "minR2": 0.6,
+    "minGrowthMb": 30
+  },
+  "frozen": {
+    "cpuPinnedSamples": 12,
+    "cpuPinnedPercent": 97,
+    "uninterruptibleSamples": 12
+  },
+  "protectedPatterns": ["Claude", "Terminal", "iTerm"]
+}
