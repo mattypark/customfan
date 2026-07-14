@@ -35,6 +35,17 @@ Those three facts cannot all be true unless the airflow path is blocked. That
 diagnosis is what the hardware buys you, and it is the one thing a software-only
 monitor is physically incapable of concluding.
 
+## Live demo
+
+**[customfan.vercel.app](https://customfan.vercel.app)** — simulated, no
+hardware attached. Runs a scripted 90-second loop: a healthy machine under
+load, then the vent blocks, then it clears. Watch the exhaust temperature at
+35s versus 60s — same CPU, same fan, completely different verdict.
+
+The real daemon reads Mac hardware and receives posts from a Pi on the local
+network, so it cannot run on a web host. See [DEPLOY.md](./DEPLOY.md) for why,
+and what is actually deployed.
+
 ## Architecture
 
 ```
@@ -89,6 +100,12 @@ node daemon/tools/leaker.js    # deliberately leaks ~20 MB/s
 ```
 
 It's flagged within a scan cycle — log-only, nothing is killed.
+
+### Demo mode (no daemon at all)
+
+The dashboard can run the whole simulation in the browser:
+**http://localhost:4311/?demo** — or `VITE_DEMO=1 npm run build`. This is what
+gets deployed.
 
 ## Install (starts at login)
 

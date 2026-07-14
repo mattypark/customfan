@@ -5,12 +5,20 @@ import { ProcessTable } from './components/processes/ProcessTable';
 import { ActionLog } from './components/log/ActionLog';
 import { VentPanel } from './components/vent/VentPanel';
 import { AlertBanner } from './components/alerts/AlertBanner';
+import { DemoBanner } from './components/demo/DemoBanner';
 import { StatusRail } from './components/shell/StatusRail';
 import { thermalState } from './lib/types';
 import './App.css';
 
 export default function App() {
-  const { frame, tempHistory, fanHistory, connection } = useDaemonFeed();
+  const {
+    frame,
+    tempHistory,
+    fanHistory,
+    connection,
+    isDemo,
+    demoStartedAt,
+  } = useDaemonFeed();
 
   const thermals = frame?.thermals ?? null;
   const state = thermalState(thermals?.cpuTempC ?? null);
@@ -24,6 +32,8 @@ export default function App() {
         suspectCount={suspects.length}
         alertCount={frame?.alerts.length ?? 0}
       />
+
+      {isDemo && <DemoBanner startedAt={demoStartedAt} />}
 
       {/* Alerts interrupt. Everything else is a reading you go looking for. */}
       <AlertBanner alerts={frame?.alerts ?? []} />

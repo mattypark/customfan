@@ -39,7 +39,8 @@
   box-shadow: 0 0 7px currentColor;
 }
 
-.rail__led--live {
+.rail__led--live,
+.rail__led--demo {
   animation: led-breathe 2.4s ease-in-out infinite;
 }
 

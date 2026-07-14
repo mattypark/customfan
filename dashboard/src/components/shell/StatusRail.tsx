@@ -22,6 +22,7 @@ function enforcement(config: WatchdogConfigView | undefined) {
 
 const CONNECTION_TONE: Record<ConnectionState, string> = {
   live: 'cool',
+  demo: 'data',
   connecting: 'warm',
   lost: 'hot',
 };

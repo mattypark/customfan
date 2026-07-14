@@ -1,0 +1,80 @@
+.demo {
+  display: grid;
+  gap: var(--gap-tight);
+  padding: var(--gap) var(--gap-wide) var(--gap) var(--gap);
+  margin-bottom: var(--gap);
+
+  background: var(--chassis-deep);
+  border: 1px solid var(--etch);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--depth-panel);
+}
+
+.demo__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+.demo__copy {
+  font-size: var(--text-body);
+  color: var(--ink-dim);
+  line-height: 1.55;
+  max-width: 82ch;
+  min-width: 0;
+}
+
+.demo__link {
+  color: var(--data);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklch, var(--data) 40%, transparent);
+  white-space: nowrap;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.demo__link:hover,
+.demo__link:focus-visible {
+  border-bottom-color: var(--data);
+}
+
+/* Narrates the scripted story — the visitor needs to know what they're seeing */
+.demo__phase {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  font-size: var(--text-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: var(--gap-tight);
+  border-top: 1px solid var(--etch);
+  transition: color var(--duration) var(--ease-out-expo);
+}
+
+.demo__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  flex-shrink: 0;
+}
+
+/* When the vent blocks, the narration itself goes red — the moment that matters */
+.demo--blocked {
+  border-color: color-mix(in oklch, var(--hot) 40%, transparent);
+}
+
+.demo--blocked .demo__phase {
+  color: var(--hot);
+  font-weight: 500;
+}
+
+.demo--blocked .demo__dot {
+  animation: demo-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes demo-pulse {
+  50% { opacity: 0.3; }
+}
