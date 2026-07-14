@@ -4,6 +4,7 @@ import { Sparkline } from './components/charts/Sparkline';
 import { ProcessTable } from './components/processes/ProcessTable';
 import { ActionLog } from './components/log/ActionLog';
 import { VentPanel } from './components/vent/VentPanel';
+import { AlertBanner } from './components/alerts/AlertBanner';
 import { StatusRail } from './components/shell/StatusRail';
 import { thermalState } from './lib/types';
 import './App.css';
@@ -21,7 +22,11 @@ export default function App() {
         connection={connection}
         config={frame?.config}
         suspectCount={suspects.length}
+        alertCount={frame?.alerts.length ?? 0}
       />
+
+      {/* Alerts interrupt. Everything else is a reading you go looking for. */}
+      <AlertBanner alerts={frame?.alerts ?? []} />
 
       <main className="app__grid">
         {/* Hero: the temperature is the product. Everything else supports it. */}

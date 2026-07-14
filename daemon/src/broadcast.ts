@@ -4,6 +4,7 @@ import { topByCpu, topByMemory } from './sampler/processSampler.js';
 import { watchdogState } from './watchdog/index.js';
 import { recentActions } from './watchdog/actionLog.js';
 import { getVentState } from './sensors/vent.js';
+import { activeAlerts } from './alerts/index.js';
 
 const BROADCAST_INTERVAL_MS = 2000;
 
@@ -11,6 +12,7 @@ export interface StatsFrame {
   type: 'stats';
   thermals: ReturnType<typeof getLatestThermals>;
   vent: ReturnType<typeof getVentState>;
+  alerts: ReturnType<typeof activeAlerts>;
   topByCpu: ReturnType<typeof topByCpu>;
   topByMemory: ReturnType<typeof topByMemory>;
   leakSuspects: ReturnType<typeof watchdogState>['leakSuspects'];
@@ -25,6 +27,7 @@ export function buildFrame(): StatsFrame {
     type: 'stats',
     thermals: getLatestThermals(),
     vent: getVentState(),
+    alerts: activeAlerts(),
     topByCpu: topByCpu(12),
     topByMemory: topByMemory(12),
     leakSuspects: wd.leakSuspects,

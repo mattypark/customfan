@@ -1,0 +1,78 @@
+.alert {
+  --tone: var(--warm);
+  --tone-glow: var(--warm-glow);
+  overflow: hidden;
+}
+
+.alert--critical {
+  --tone: var(--hot);
+  --tone-glow: var(--hot-glow);
+}
+
+.alert__inner {
+  display: flex;
+  gap: var(--gap);
+  align-items: flex-start;
+  padding: var(--gap) var(--gap-wide) var(--gap) var(--gap);
+  margin-bottom: var(--gap);
+
+  background: linear-gradient(
+    90deg,
+    var(--tone-glow),
+    transparent 70%
+  ),
+  var(--chassis-deep);
+  border: 1px solid color-mix(in oklch, var(--tone) 40%, transparent);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.04),
+    0 0 32px -12px var(--tone-glow);
+}
+
+/* Lit bar down the left edge — reads as "something is wrong" before any text */
+.alert__mark {
+  width: 3px;
+  align-self: stretch;
+  min-height: 38px;
+  border-radius: 2px;
+  background: var(--tone);
+  box-shadow: 0 0 12px var(--tone);
+  flex-shrink: 0;
+}
+
+.alert--critical .alert__mark {
+  animation: alert-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes alert-pulse {
+  50% { opacity: 0.4; }
+}
+
+.alert__body {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.alert__title {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  flex-wrap: wrap;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.alert__age {
+  font-size: var(--text-label);
+  color: var(--ink-faint);
+}
+
+.alert__detail {
+  font-size: var(--text-body);
+  color: var(--ink-dim);
+  line-height: 1.55;
+  max-width: 78ch;
+}

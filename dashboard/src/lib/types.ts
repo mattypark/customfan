@@ -64,10 +64,21 @@ export interface VentState {
   stale: boolean;
 }
 
+export type Severity = 'warn' | 'critical';
+
+export interface Alert {
+  id: string;
+  severity: Severity;
+  title: string;
+  detail: string;
+  since: number;
+}
+
 export interface StatsFrame {
   type: 'stats';
   thermals: Thermals | null;
   vent: VentState;
+  alerts: Alert[];
   topByCpu: ProcessSummary[];
   topByMemory: ProcessSummary[];
   leakSuspects: LeakSuspect[];

@@ -12,6 +12,7 @@ import { startWatchdog, watchdogState } from './watchdog/index.js';
 import { recentActions } from './watchdog/actionLog.js';
 import { buildFrame, startBroadcasting } from './broadcast.js';
 import { getVentState, ingestVentPost } from './sensors/vent.js';
+import { activeAlerts, startAlerts } from './alerts/index.js';
 
 const app = express();
 app.use(express.json());
@@ -31,7 +32,7 @@ app.get('/health', (_req, res) => {
     version: APP_VERSION,
     sim: SIM_MODE,
     uptimeSeconds: Math.round((Date.now() - startedAt) / 1000),
-    stage: 5,
+    stage: 7,
   });
 });
 
@@ -78,6 +79,7 @@ wss.on('connection', (socket) => {
 startThermalPolling();
 startProcessSampling();
 startWatchdog();
+startAlerts();
 startBroadcasting(wss);
 
 server.listen(DAEMON_PORT, () => {

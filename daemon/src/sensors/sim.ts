@@ -13,6 +13,14 @@ const FAN_MIN_RPM = 1100;
 const FAN_MAX_RPM = 6400;
 const FAN_CHASE_RATE = 0.15; // how fast fan closes gap to its target per tick
 
+/**
+ * SIM_HOT=1 pins the simulated machine under heavy sustained load. Used by
+ * tools/demo-clog.js, which needs a hot CPU and a hard-working fan in order
+ * to demonstrate the vent-clog alert.
+ */
+const FORCE_HOT = process.env.SIM_HOT === '1';
+const HOT_FLOOR_C = 86;
+
 let temp = 55;
 let fanRpm = 1600;
 let spikeTicksLeft = 0;
@@ -28,6 +36,10 @@ export function readSimThermals(): ThermalReading {
   spikeTicksLeft -= 1;
 
   temp = Math.min(TEMP_MAX, Math.max(TEMP_MIN, temp + drift + spikePush));
+
+  if (FORCE_HOT) {
+    temp = Math.max(HOT_FLOOR_C, temp);
+  }
 
   // Fan curve: idle below 55°C, ramps linearly to max at 90°C.
   const heat = Math.min(1, Math.max(0, (temp - 55) / 35));

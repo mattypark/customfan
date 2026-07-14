@@ -6,6 +6,7 @@ interface Props {
   connection: ConnectionState;
   config: WatchdogConfigView | undefined;
   suspectCount: number;
+  alertCount: number;
 }
 
 /**
@@ -25,7 +26,12 @@ const CONNECTION_TONE: Record<ConnectionState, string> = {
   lost: 'hot',
 };
 
-export function StatusRail({ connection, config, suspectCount }: Props) {
+export function StatusRail({
+  connection,
+  config,
+  suspectCount,
+  alertCount,
+}: Props) {
   const enf = enforcement(config);
 
   return (
@@ -45,6 +51,12 @@ export function StatusRail({ connection, config, suspectCount }: Props) {
 
         <span className={`chip chip--${suspectCount > 0 ? 'hot' : 'mute'}`}>
           {suspectCount} leak {suspectCount === 1 ? 'suspect' : 'suspects'}
+        </span>
+
+        <span className={`chip chip--${alertCount > 0 ? 'hot' : 'cool'}`}>
+          {alertCount === 0
+            ? 'nominal'
+            : `${alertCount} alert${alertCount === 1 ? '' : 's'}`}
         </span>
       </div>
     </header>
