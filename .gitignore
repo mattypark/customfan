@@ -16,5 +16,9 @@ __pycache__/
 *.log
 daemon/data/
 
+# Calibration is specific to one physical set of thermistors — never share it.
+# Regenerate on the Pi with `python3 calibrate.py`.
+pi-agent/calibration.json
+
 # OS
 .DS_Store

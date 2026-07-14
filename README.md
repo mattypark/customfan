@@ -35,7 +35,7 @@ sensor data. The Pi + thermistors swap in later without code changes.
 - [x] **Stage 3** — Watchdog engine (leak detection, frozen-task detection, kill policy)
 - [x] **Stage 4** — Dashboard UI (live WebSocket charts + gauges)
 - [x] **Stage 5** — Raspberry Pi vent-temp agent, DS18B20 path (sim until hardware)
-- [ ] **Stage 6** — True analog thermistors via MCP3008 ADC + Steinhart–Hart
+- [x] **Stage 6** — True analog thermistors via MCP3008 ADC + Steinhart–Hart
 - [ ] **Stage 7** — launchd autostart, vent-clog alerts, polish
 
 ## Run
@@ -93,6 +93,39 @@ vent temp is the thing a software-only monitor physically cannot do.
 
 If the agent stops reporting, readings go **stale** after 10s — the dashboard
 says "no agent" rather than showing a frozen number as if it were live.
+
+Two sensor paths, same interface:
+
+```bash
+SIM=1 python3 agent.py                     # DS18B20 digital probes (1-wire)
+SIM=1 SENSOR=thermistor python3 agent.py   # analog NTC thermistors via MCP3008
+SIM=1 python3 calibrate.py                 # rehearse Steinhart–Hart calibration
+python3 -m unittest discover               # 19 tests, no hardware needed
+```
+
+The thermistor simulator fakes **raw ADC counts**, not temperatures — the
+production math (counts → resistance → Steinhart–Hart) converts them back
+exactly as it will on hardware. The code under test is the code that ships.
+
+## Tests
+
+```bash
+cd daemon    && npm test                   # 15 — leak detector, kill policy
+cd pi-agent  && python3 -m unittest discover  # 19 — thermistor math, ADC faults
+```
+
+Both suites run with no hardware and no network.
+
+## Design principle
+
+Every sensor in this project **refuses to guess**. A disconnected thermistor
+reads 0 counts, which naively converts to a plausible-looking temperature — so
+the code raises instead. A DS18B20 reporting exactly 85.0 °C means it reset
+without a real conversion, so that reading is dropped. A vent agent that goes
+quiet goes *stale*, not frozen-but-current.
+
+A thermal safety tool that invents a believable number when its sensor is
+broken is worse than no tool at all.
 
 ## Hardware
 

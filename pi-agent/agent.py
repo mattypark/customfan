@@ -5,13 +5,17 @@ probes and POSTs them to the Mac daemon on a fixed interval.
 
 Standard library only — nothing to pip install on the Pi.
 
-Sensor selection:
+Sensor selection (first match wins):
   SIM=1                  → simulated probes (works anywhere, no hardware)
-  DS18B20 on the bus     → used automatically
-  neither                → falls back to sim with a loud warning
+  DS18B20 on the 1-wire bus
+  MCP3008 thermistors on SPI
+  none of the above      → falls back to sim with a loud warning
+
+Force one with SENSOR=ds18b20 | thermistor | sim.
 
 Usage:
     SIM=1 python3 agent.py                       # works on your Mac today
+    SIM=1 SENSOR=thermistor python3 agent.py     # sim the analog path
     python3 agent.py                             # on the Pi, real probes
     DAEMON_URL=http://192.168.1.20:4310 python3 agent.py
 """
@@ -28,7 +32,9 @@ import urllib.request
 
 from sensors.base import VentSensor
 from sensors.ds18b20 import DS18B20Sensor
+from sensors.mcp3008 import MCP3008
 from sensors.sim import SimVentSensor
+from sensors.thermistor import ThermistorSensor, build_sim_thermistor
 
 DAEMON_URL = os.environ.get("DAEMON_URL", "http://localhost:4310")
 POST_PATH = "/api/vent-temps"
@@ -36,6 +42,12 @@ INTERVAL_SEC = float(os.environ.get("INTERVAL", "2"))
 POST_TIMEOUT_SEC = 4.0
 SIM_MODE = os.environ.get("SIM") == "1"
 AGENT_ID = os.environ.get("AGENT_ID", "pi-vent-01")
+
+# Which sensor to use: "ds18b20" | "thermistor" | "sim" | "" (auto-detect)
+SENSOR_CHOICE = os.environ.get("SENSOR", "").lower()
+THERMISTOR_CHANNELS = [
+    int(c) for c in os.environ.get("CHANNELS", "0,1,2").split(",")
+]
 
 _running = True
 
@@ -47,16 +59,32 @@ def _stop(_signum: int, _frame: object) -> None:
 
 def pick_sensor() -> VentSensor:
     if SIM_MODE:
+        # In sim, SENSOR=thermistor exercises the analog conversion chain
+        # (counts → resistance → Steinhart–Hart) instead of the 1-wire path.
+        if SENSOR_CHOICE == "thermistor":
+            return build_sim_thermistor(THERMISTOR_CHANNELS)
         return SimVentSensor()
 
+    if SENSOR_CHOICE == "ds18b20":
+        return DS18B20Sensor()
+    if SENSOR_CHOICE == "thermistor":
+        return ThermistorSensor(adc=MCP3008(), channels=THERMISTOR_CHANNELS)
+
+    # Auto-detect: DS18B20 first (simpler, more accurate out of the box),
+    # then the analog thermistor stack.
     if DS18B20Sensor.available():
         return DS18B20Sensor()
+    if ThermistorSensor.available():
+        return ThermistorSensor(adc=MCP3008(), channels=THERMISTOR_CHANNELS)
 
     print(
-        "[pi-agent] WARNING: no DS18B20 probes found on the 1-wire bus.\n"
-        "[pi-agent]   Check: dtoverlay=w1-gpio in /boot/firmware/config.txt,\n"
-        "[pi-agent]          4.7k pull-up between DATA and 3V3, then reboot.\n"
-        "[pi-agent]   Falling back to SIMULATED data — readings are not real.",
+        "[pi-agent] WARNING: no probes found.\n"
+        "[pi-agent]   DS18B20: needs dtoverlay=w1-gpio in "
+        "/boot/firmware/config.txt,\n"
+        "[pi-agent]            a 4.7k pull-up between DATA and 3V3, and a reboot.\n"
+        "[pi-agent]   MCP3008: needs SPI enabled (raspi-config) and spidev "
+        "installed.\n"
+        "[pi-agent]   Falling back to SIMULATED data — readings are NOT real.",
         file=sys.stderr,
     )
     return SimVentSensor()
